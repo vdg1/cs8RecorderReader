@@ -21,10 +21,10 @@ cs8polygonlimit.cpp \
 
 HEADERS  += mainwindow.h \
     cs8recordermodel.h \
-    XMLSettings.h \
     formprojectdata.h \
-cs8polygonlimit.h \
-    formpolygonlimiteditor.h
+    cs8polygonlimit.h \
+    formpolygonlimiteditor.h \
+    XMLSettings.h
 
 FORMS    += mainwindow.ui \
     formpolygonlimiteditor.ui \

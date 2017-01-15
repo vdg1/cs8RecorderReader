@@ -192,7 +192,8 @@ int cs8RecorderModel::nextEndTag(const QByteArray &ba)
 {
     for (int i=0; i<ba.length()-1; i++)
     {
-        if (ba[i]==0x0 && ba[i+1]!=0x0)
+        qDebug() << static_cast<unsigned char>(ba[i]) << " " << ba[i];
+        if ((ba[i]==0x0 && ba[i+1]!=0x0) || (static_cast<unsigned char>(ba[i])==0xff && static_cast<unsigned char>(ba[i+1])!=0xff))
             return i;
     }
     return -1;
@@ -275,7 +276,6 @@ bool cs8RecorderModel::parseColumnHeaders(QByteArray &data)
     QByteArray ba;
     int pos;
     QStringList columnHeaders;
-    mColumnCount=12;
     mJointNumbers.resize(mColumnCount);
 
     for (int i=0; i<mColumnCount; i++)
@@ -287,10 +287,19 @@ bool cs8RecorderModel::parseColumnHeaders(QByteArray &data)
         ba=data.mid(0,pos);
         while (ba.at(0)==0x00)
             ba.remove(0,1);
-        while (ba.at(ba.length()-1)==0x00)
+        while ((ba.at(ba.length()-1)==0x00) || (static_cast<unsigned char>(ba.at(ba.length()-1))==0xff))
             ba.chop(1);
 
-        int jointNumber=ba.at(ba.length()-1)<6?ba.at(ba.length()-1):0;
+
+        bool ok;
+        int jointNumber=QString(ba).right(1).toInt(&ok);
+        if (!ok)
+            // joint number is text data
+            jointNumber=ba.at(ba.length()-1)<6?ba.at(ba.length()-1):0;
+        else
+            // joint number is encoded as binary data after variable name
+            ba.chop(1);
+        //
         if (ba.at(ba.length()-1)<6 && ba.at(ba.length()-1)>0)
             ba.chop(1);
         mJointNumbers[i]=jointNumber;

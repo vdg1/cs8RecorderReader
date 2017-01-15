@@ -1,7 +1,7 @@
 #include "formprojectdata.h"
 #include "ui_formprojectdata.h"
-
 #include "XMLSettings.h"
+
 #include <QFile>
 #include <QFileDialog>
 
@@ -33,11 +33,6 @@ void FormProjectData::loadRecording(QString fileName)
         ui->leVal3Version->setText(m_model->val3Version());
         ui->leRecording->setText(fileName);
         m_recordingFileName=fileName;
-
-        ui->spCycleStart->setMinimum(0);
-        ui->spCycleStart->setMaximum(m_model->rowCount());
-        ui->spCyleStop->setMinimum(0);
-        ui->spCyleStop->setMaximum(m_model->rowCount());
 
 
 
@@ -116,8 +111,6 @@ void FormProjectData::loadProjectFile(const QString &fileName)
     qDebug() << sets;
     loadRecording(sets["Recording"].toString());
 
-    ui->spCycleStart->setValue(sets["startCycle"].toInt());
-    ui->spCyleStop->setValue(sets["stopCycle"].toInt());
 
     QMapIterator<QString, QVariant> i(sets);
     while (i.hasNext())
@@ -157,8 +150,8 @@ void FormProjectData::saveProjectFile(const QString &fileName)
     QMap<QString,QVariant> sets;
 
     sets["Recording"]=m_recordingFileName;
-    sets["startCycle"]=ui->spCycleStart->value();
-    sets["stopCycle"]=ui->spCyleStop->value();
+    //sets["startCycle"]=ui->spCycleStart->value();
+    //sets["stopCycle"]=ui->spCyleStop->value();
     int c=0;
     foreach(cs8PolygonLimit* l,m_polygonList)
     {
